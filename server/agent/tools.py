@@ -1,5 +1,4 @@
 from langchain_core.tools import tool
-from langchain_community.utilities import GoogleSerperAPIWrapper
 from langchain_community.retrievers import ArxivRetriever
 import os
 import dashscope
@@ -69,29 +68,6 @@ def make_pdf_tool(retriever):
         return format_pdf_hits(reranked_docs)
 
     return search_pdf
-
-
-def make_web_tool(serper_api_key: str):
-    serper = GoogleSerperAPIWrapper(api_key=serper_api_key)
-
-    @tool("search_web")
-    def search_web(query: str) -> str:
-        """Search the web using Serper."""
-
-        results = serper.results(query)
-        organic = results.get("organic", [])
-
-        out = ["Web Search Results:"]
-
-        for r in organic[:5]:
-            out.append(
-                f"- {r.get('title')}: {r.get('snippet')}"
-            )
-
-        return "\n".join(out)
-
-
-    return search_web
 
 
 def make_arxiv_tool():
